@@ -16,9 +16,8 @@ class Register extends Component {
   }
 
   handleClick(event){
-    var apiBaseUrl = "https://todo-plus-api.herokuapp.com";
+    var apiBaseUrl = "http://localhost:3001";
     console.log("values",this.state.first_name,this.state.last_name,this.state.email,this.state.password);
-    //To be done:check for empty values before hitting submit
     var self = this;
     var payload={
     "email":this.state.email,
@@ -28,7 +27,6 @@ class Register extends Component {
    .then(function (response) {
      console.log(response);
      if(response.data.code === 201){
-      //  console.log("registration successfull");
        var loginscreen=[];
        loginscreen.push(<Login parentContext={this}/>);
        var loginmessage = "Not Registered yet.Go to registration";

@@ -17,13 +17,13 @@ constructor(props){
  }
 
  handleClick(event){
-    var apiBaseUrl = "https://todo-plus-api.herokuapp.com/";
+    var apiBaseUrl = "http://localhost:3001";
     var self = this;
     var userData = {
         "email": this.state.username,
         "password": this.state.password
     }
-    axios.post(apiBaseUrl+'auth/login', userData)
+    axios.post(apiBaseUrl+'/auth/login', userData)
     .then((response) => {
     console.log(response);
     if(response.data.auth_token){
@@ -45,7 +45,7 @@ constructor(props){
     }
     else{
         console.log("invalid username or password");
-        alert("invalid username or passwordt");
+        alert("invalid username or password");
     }
     })
     .catch(function (error) {

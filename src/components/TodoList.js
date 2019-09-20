@@ -13,15 +13,11 @@ export default class TodoList extends React.Component {
         todosToShow: "all",
         toggleAllComplete: true
     };
+    
 
     componentDidMount(){
         // Make HTTP reques with Axios
-        // if(localStorage.getItem('currentUser') != null){
-        //     console.log('logged in');
-        //     var token = localStorage.getItem('currentUser').auth_token;
-        //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        // }
-        axios.get('https://todo-plus-api.herokuapp.com/todos')
+        axios.get('http://localhost:3001/todos/')
           .then((res) => {
             console.log(res.data);
             // Set state with result
@@ -30,11 +26,9 @@ export default class TodoList extends React.Component {
     }
 
     addTodo = (todo) => {
-        //let newTodo = {text: todo.text, complete: todo.complete, created_by: "ryan"}
         //pass to api
         console.log(todo.id);
-        let newTodo = {text: todo.text, id: todo.id, complete: false};
-        axios.post('https://todo-plus-api.herokuapp.com/todos', todo)
+        axios.post('http://localhost:3001/todos/', todo)
        .then((res) => {
           console.log(res.data);
           this.setState(state => ({
@@ -49,7 +43,7 @@ export default class TodoList extends React.Component {
                 //supposed to update
                 if (todo.id === id){
                     console.log(id);
-                    axios.put('https://todo-plus-api.herokuapp.com/todos/' + id, {
+                    axios.put('http://localhost:3001/todos/' + id, {
                         ...todo,
                         complete: !todo.complete
                     });
@@ -71,7 +65,7 @@ export default class TodoList extends React.Component {
     }
 
     handleDeleteTodo = (id) => {
-        axios.delete('https://todo-plus-api.herokuapp.com/todos/' + id);
+        axios.delete('http://localhost:3001/todos/' + id);
         this.setState(state => ({
             todos: state.todos.filter(todo => todo.id !== id)
         }));
@@ -80,7 +74,7 @@ export default class TodoList extends React.Component {
     removeAllComplete = async () => {
         for(let i = 0; i < this.state.todos.length; i++){
             if(this.state.todos[i].complete){
-                await axios.delete('https://todo-plus-api.herokuapp.com/todos/' + this.state.todos[i].id);
+                await axios.delete('http://localhost:3001/todos/' + this.state.todos[i].id);
             }
         }
         this.setState(state => ({
