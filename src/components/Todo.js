@@ -1,12 +1,15 @@
 import React from 'react';
+import { ListItem } from 'material-ui';
+import FlatButton from 'material-ui/FlatButton';
 
 export default (props) => (
     <div style={{display: 'flex', justifyContent: "center"}}>
-      <div style={{
-            textDecoration: props.todo.complete ? "line-through": ""
+      <ListItem style={{
+            textDecoration: props.todo.complete ? "line-through": "",
+            'fontStyle': 'italic'
         }}
-        onClick={props.toggleComplete}>{props.todo.title}
-      </div>
-      <button onClick={props.onDelete}>x</button>
+        onClick={props.toggleComplete}>{props.todo.text}
+       </ListItem>
+      <FlatButton variant="outline" color="primary" label='X' onClick={props.onDelete}/>
     </div>
 );

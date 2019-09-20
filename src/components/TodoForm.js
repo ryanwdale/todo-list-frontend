@@ -1,5 +1,7 @@
 import React from 'react';
 import shortid from 'shortid';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
 export default class TodoForm extends React.Component {
     state = {
@@ -13,9 +15,9 @@ export default class TodoForm extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.props.onSubmit({
-            id: shortid.generate(),
             text: this.state.text,
-            complete: false
+            complete: false,
+            id: ""
         });
         this.setState({
             text: ""
@@ -23,15 +25,19 @@ export default class TodoForm extends React.Component {
     }
     render() {
         return (
-        <form onSubmit={this.handleSubmit}>
-            <input 
-                name="text"
-                value={this.state.text} 
-                onChange={this.handleChange}
-                placeholder="todo..."
-            />
-            <button onClick={this.handleSubmit}>add todo</button>
-        </form>
+        <div>
+                <TextField
+                    name="text"
+                    value={this.state.text} 
+                    onChange={this.handleChange}
+                    placeholder="todo..."
+                />
+                <RaisedButton label="Add Todo" primary={true} style={style} onClick={this.handleSubmit}/>
+        </div>    
         );
     }
 }
+
+const style = {
+    margin: 15,
+};

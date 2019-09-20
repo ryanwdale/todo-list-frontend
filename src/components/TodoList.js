@@ -2,6 +2,10 @@ import React from 'react';
 import TodoForm from "./TodoForm";
 import Todo from './Todo';
 import axios from 'axios';
+import RaisedButton from 'material-ui/RaisedButton';
+import AppBar from 'material-ui/AppBar';
+import List from 'material-ui/List';
+
 
 export default class TodoList extends React.Component {
     state = {
@@ -12,18 +16,31 @@ export default class TodoList extends React.Component {
 
     componentDidMount(){
         // Make HTTP reques with Axios
-        axios.get('http://localhost:3001/todos')
+        // if(localStorage.getItem('currentUser') != null){
+        //     console.log('logged in');
+        //     var token = localStorage.getItem('currentUser').auth_token;
+        //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // }
+        axios.get('http://localhost:3004/todos')
           .then((res) => {
+            console.log(res.data);
             // Set state with result
             this.setState({todos: res.data});
-          });
+        });
     }
 
     addTodo = (todo) => {
+        //let newTodo = {text: todo.text, complete: todo.complete, created_by: "ryan"}
         //pass to api
-        this.setState(state => ({
-            todos: [todo, ...state.todos]
+        console.log(todo.id);
+        let newTodo = {text: todo.text, id: todo.id, complete: false};
+        axios.post('http://localhost:3004/todos', todo)
+       .then((res) => {
+          console.log(res.data);
+          this.setState(state => ({
+            todos: [res.data, ...state.todos]
         }));
+       });
     }
 
     toggleComplete = (id) => {
@@ -31,6 +48,11 @@ export default class TodoList extends React.Component {
             todos: this.state.todos.map(todo => {
                 //supposed to update
                 if (todo.id === id){
+                    console.log(id);
+                    axios.put('http://localhost:3004/todos/' + id, {
+                        ...todo,
+                        complete: !todo.complete
+                    });
                     return {
                         ...todo,
                         complete: !todo.complete
@@ -49,12 +71,18 @@ export default class TodoList extends React.Component {
     }
 
     handleDeleteTodo = (id) => {
+        axios.delete('http://localhost:3004/todos/' + id);
         this.setState(state => ({
             todos: state.todos.filter(todo => todo.id !== id)
         }));
     }
 
-    removeAllComplete = () => {
+    removeAllComplete = async () => {
+        for(let i = 0; i < this.state.todos.length; i++){
+            if(this.state.todos[i].complete){
+                await axios.delete('http://localhost:3004/todos/' + this.state.todos[i].id);
+            }
+        }
         this.setState(state => ({
             todos: this.state.todos.filter(todo => !todo.complete)
         }));
@@ -83,6 +111,9 @@ export default class TodoList extends React.Component {
         }
         return (
         <div>
+            <AppBar
+             title="Todo List"
+           />
             <TodoForm onSubmit={this.addTodo}/>
             {todos.map(todo => (
                 <Todo key={todo.id} 
@@ -90,21 +121,25 @@ export default class TodoList extends React.Component {
                 onDelete={() => this.handleDeleteTodo(todo.id)}
                 todo={todo}/>
             ))}
-            <div>
+            <List>
                 todos left: {this.state.todos.filter(todo => !todo.complete).length}
-            </div>
+            </List>
             <div>
-                <button onClick={() => this.updateTodoToShow("all")}>all</button>
-                <button onClick={() => this.updateTodoToShow("active")}>active</button>
-                <button onClick={() => this.updateTodoToShow("complete")}>complete</button>
+                <RaisedButton label="all" primary={true} style={style} onClick={() => this.updateTodoToShow("all")}/>
+                <RaisedButton label="active" primary={true} style={style} onClick={() => this.updateTodoToShow("active")}/>
+                <RaisedButton label="complete" primary={true} style={style} onClick={() => this.updateTodoToShow("complete")}/>
             </div>
             {this.state.todos.some(todo => todo.complete) ? (<div>
-                <button onClick={this.removeAllComplete}>remove all complete</button>
+                <RaisedButton label="remove all complete" primary={true} style={style} onClick={this.removeAllComplete}/>
             </div>) : null}
             <div>
-                <button onClick={this.allCompleteToggle}>toggle all complete: {this.state.toggleAllComplete.toString()}</button>
+                <RaisedButton label={`toggle all complete:  ${this.state.toggleAllComplete}`} primary={true} style={style} onClick={this.allCompleteToggle}/>
             </div>
         </div>    
         );
     }
 }
+
+const style = {
+    margin: 15,
+};
