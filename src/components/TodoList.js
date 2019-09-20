@@ -21,7 +21,7 @@ export default class TodoList extends React.Component {
         //     var token = localStorage.getItem('currentUser').auth_token;
         //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         // }
-        axios.get('http://localhost:3004/todos')
+        axios.get('https://todo-plus-api.herokuapp.com/todos')
           .then((res) => {
             console.log(res.data);
             // Set state with result
@@ -34,7 +34,7 @@ export default class TodoList extends React.Component {
         //pass to api
         console.log(todo.id);
         let newTodo = {text: todo.text, id: todo.id, complete: false};
-        axios.post('http://localhost:3004/todos', todo)
+        axios.post('https://todo-plus-api.herokuapp.com/todos', todo)
        .then((res) => {
           console.log(res.data);
           this.setState(state => ({
@@ -49,7 +49,7 @@ export default class TodoList extends React.Component {
                 //supposed to update
                 if (todo.id === id){
                     console.log(id);
-                    axios.put('http://localhost:3004/todos/' + id, {
+                    axios.put('https://todo-plus-api.herokuapp.com/todos/' + id, {
                         ...todo,
                         complete: !todo.complete
                     });
@@ -71,7 +71,7 @@ export default class TodoList extends React.Component {
     }
 
     handleDeleteTodo = (id) => {
-        axios.delete('http://localhost:3004/todos/' + id);
+        axios.delete('https://todo-plus-api.herokuapp.com/todos/' + id);
         this.setState(state => ({
             todos: state.todos.filter(todo => todo.id !== id)
         }));
@@ -80,7 +80,7 @@ export default class TodoList extends React.Component {
     removeAllComplete = async () => {
         for(let i = 0; i < this.state.todos.length; i++){
             if(this.state.todos[i].complete){
-                await axios.delete('http://localhost:3004/todos/' + this.state.todos[i].id);
+                await axios.delete('https://todo-plus-api.herokuapp.com/todos/' + this.state.todos[i].id);
             }
         }
         this.setState(state => ({
